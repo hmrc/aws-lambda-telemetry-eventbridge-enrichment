@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "aws-lambda-telemetry-eventbridge-enrichment"
+version = "0.1.0"
+description = "A lambda function that enriches events in an EventBridge Pipe"
+authors = ["Team Telemetry <telemetry@digital.hmrc.gov.uk>"]
+license = "Apache 2.0"
+readme = "README.md"
+
+[[tool.poetry.source]]
+name = "artifactory"
+url = "https://artefacts.tax.service.gov.uk/artifactory/api/pypi/pips/simple/"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+aws-lambda-powertools = "^2.5.0"
+boto3 = "^1.26.45"
+PyGithub = "^1.57"
+
+[tool.poetry.group.dev.dependencies]
+aws-lambda-context = "^1.1.0"
+bandit = "^1.7.4"
+black = "^22.12.0"
+cookiecutter = "^2.1.1"
+cruft = "^2.12.0"
+flake8 = "^6.0.0"
+moto = "^4.0.13"
+pre-commit = "^2.21.0"
+pytest = "^7.2.0"
+pytest-cov = "^4.0.0"
+safety = "^2.3.5"
+version-incrementor = "^1.5.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
