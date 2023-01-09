@@ -1,16 +1,17 @@
 {
   "template": "https://github.com/hmrc/telemetry-lambda-resources",
-  "commit": "fc3bae21c467f02d42f44294fae423f69b40d074",
+  "commit": "f10ed6d552f5894ce92d4e7b0e78158bbe6e15d6",
   "checkout": null,
   "context": {
     "cookiecutter": {
-      "bandit_skip_tests": "",
+      "bandit_skip_tests": "'B105'",
       "custom_makefile_name": "",
       "flake8_extra_skip_tests": "",
       "lambda_artifacts_bucket": "telemetry-internal-base-lambda-artifacts",
       "lambda_handler": "handler.enrich_codepipeline_event",
       "lambda_name": "aws-lambda-telemetry-eventbridge-enrichment",
       "lambda_name_formatted": "aws-lambda-telemetry-eventbridge-enrichment",
+      "safety_disabled": "yes",
       "unit_test_style": "pytest",
       "_template": "https://github.com/hmrc/telemetry-lambda-resources"
     }
