@@ -11,4 +11,4 @@ RUN python -m venv venv && \
 
 COPY src tests ${LAMBDA_TASK_ROOT}/
 
-CMD [ "handler.lambda_handler" ]
+CMD [ "handler.enrich_codepipeline_event" ]
