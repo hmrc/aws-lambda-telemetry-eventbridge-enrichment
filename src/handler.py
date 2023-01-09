@@ -1,8 +1,8 @@
-import boto3
 import os
 
-from aws_lambda_powertools import Logger
+import boto3
 from aws_lambda_context import LambdaContext
+from aws_lambda_powertools import Logger
 from botocore.config import Config
 from botocore.exceptions import ClientError
 from github import Github
@@ -34,12 +34,12 @@ def get_ssm_parameter(ssm_parameter: str) -> str:
 
 def get_pipeline_commit_sha(name: str, execution_id: str):
     try:
-        parameter = pipeline_client.get_pipeline_execution(pipelineName=name, pipelineExecutionId=execution_id)
+        parameter = pipeline_client.get_pipeline_execution(
+            pipelineName=name, pipelineExecutionId=execution_id
+        )
     except ClientError as e:
         if e.response["Error"]["Code"] == "ParameterNotFound":
-            raise KeyError(
-                "Critical, required pipeline was not found."
-            )
+            raise KeyError("Critical, required pipeline was not found.")
         else:
             raise e
 
@@ -80,5 +80,5 @@ if __name__ == "__main__":
     lambda_context = LambdaContext()
     lambda_context.function_name = "enrich_codepipeline_event"
     lambda_context.aws_request_id = "abc-123"
-    test_event = {"execution_id": '0d18ecc5-2611-436b-9d2f-ba7e9bfc721d'}
+    test_event = {"execution_id": "0d18ecc5-2611-436b-9d2f-ba7e9bfc721d"}
     enrich_codepipeline_event(event=test_event, context=lambda_context)
