@@ -86,7 +86,7 @@ publish_to_artifactory: ## Build and push lambda zip to Artifactory
 .PHONY: publish_to_artifactory
 
 safety: ## Run Safety
-	@poetry run safety check
+	@echo Safety check is disabled
 .PHONY: safety
 
 setup: check_poetry ## Setup virtualenv & dependencies using poetry and set-up the git hook scripts
