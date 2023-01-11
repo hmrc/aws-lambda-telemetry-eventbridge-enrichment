@@ -2,8 +2,7 @@ import os
 
 import pytest
 from aws_lambda_powertools import Logger
-
-import src.helper
+from helper import Helper
 
 
 @pytest.fixture
@@ -20,7 +19,7 @@ def helper():
         service="aws-lambda-telemetry-eventbridge-enrichment",
         level=os.environ.get("LOG_LEVEL", "DEBUG"),
     )
-    return src.helper.Helper(logger)
+    return Helper(logger)
 
 
 def test_get_slack_handle_for_valid_users(valid_users, helper):
