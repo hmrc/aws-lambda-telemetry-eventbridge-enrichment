@@ -7,9 +7,9 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 from github import Github
 
-import src.helper
-from src.exceptions import EmptyEventDetailException
-from src.exceptions import NoExecutionIdFoundException
+from .exceptions import EmptyEventDetailException
+from .exceptions import NoExecutionIdFoundException
+from .helper import Helper
 
 
 config = Config(retries={"max_attempts": 60, "mode": "standard"})
@@ -92,7 +92,7 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     author_email = get_github_author_email(github_token, commit_sha)
 
     # translate git email -> slack id (simple lookup)
-    helper = src.helper.Helper(logger)
+    helper = Helper(logger)
     slack_handle = helper.get_slack_handle(author_email)
     event.get("detail")["slack_handle"] = slack_handle
 
