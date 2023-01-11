@@ -124,8 +124,8 @@ def test_lambda_handler_invalid_event_empty_detail_with_context(
 ):
     """Test that an event containing unexpected data with lambda context logs appropriately"""
     # Arrange & Act
-    from src.exceptions import EmptyEventDetailException
-    from src.handler import enrich_codepipeline_event
+    from exceptions import EmptyEventDetailException
+    from handler import enrich_codepipeline_event
 
     with pytest.raises(EmptyEventDetailException):
         response = enrich_codepipeline_event(
@@ -141,8 +141,8 @@ def test_lambda_handler_invalid_event_with_no_execution_id(
 ):
     """Test that an event containing missing and required data with lambda context logs appropriately"""
     # Arrange & Act
-    from src.exceptions import NoExecutionIdFoundException
-    from src.handler import enrich_codepipeline_event
+    from exceptions import NoExecutionIdFoundException
+    from handler import enrich_codepipeline_event
 
     with pytest.raises(NoExecutionIdFoundException):
         response = enrich_codepipeline_event(
