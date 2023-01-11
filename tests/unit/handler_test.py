@@ -7,7 +7,7 @@ from botocore.exceptions import ClientError
 def test_get_ssm_parameter(ssm):
     """Test that retrieving an SSM parameter that does exist returns the parameter"""
     # Arrange & Act
-    from src.handler import get_ssm_parameter
+    from handler import get_ssm_parameter
 
     ssm.put_parameter(Name="telemetry_github_user", Value="foobar")
     parameter_result = get_ssm_parameter("telemetry_github_user")
@@ -19,7 +19,7 @@ def test_get_ssm_parameter(ssm):
 def test_get_ssm_parameter_raises_error(ssm):
     """Test that retrieving an SSM parameter that does not exist raises an error"""
     # Arrange & Act
-    from src.handler import get_ssm_parameter
+    from handler import get_ssm_parameter
 
     with pytest.raises(ClientError):
         parameter_result = get_ssm_parameter("telemetry_github_user")
@@ -32,7 +32,7 @@ def test_get_pipeline_execution_succeeds(
     codepipeline_client_stub, get_pipeline_execution_success_fixture
 ):
     # Arrange
-    from src.handler import get_pipeline_commit_sha
+    from handler import get_pipeline_commit_sha
 
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
@@ -51,7 +51,7 @@ def test_get_pipeline_execution_handles_incorrect_execution_id(
     codepipeline_client_stub,
 ):
     # Arrange
-    from src.handler import get_pipeline_commit_sha
+    from handler import get_pipeline_commit_sha
 
     codepipeline_client_stub.add_client_error(
         "get_pipeline_execution",
@@ -73,7 +73,7 @@ def test_get_pipeline_execution_handles_incorrect_execution_id(
 
 def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_stub):
     # Arrange
-    from src.handler import get_pipeline_commit_sha
+    from handler import get_pipeline_commit_sha
 
     codepipeline_client_stub.add_client_error(
         "get_pipeline_execution",
@@ -93,7 +93,7 @@ def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_s
     )
 
 
-@patch("src.handler.get_github_author_email")
+@patch("handler.get_github_author_email")
 def test_handler_golden_path(
     mock_github,
     ssm,
@@ -103,7 +103,7 @@ def test_handler_golden_path(
     context,
 ):
     # Arrange
-    from src.handler import enrich_codepipeline_event
+    from handler import enrich_codepipeline_event
 
     mock_github.return_value = "29373851+thinkstack@users.noreply.github.com"
     ssm.put_parameter(Name="telemetry_github_token", Value="token123")
