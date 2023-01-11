@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/hmrc/telemetry-lambda-resources",
-  "commit": "f10ed6d552f5894ce92d4e7b0e78158bbe6e15d6",
+  "commit": "e4e14271f1ff57463831fca7c2a8904acfedbf3c",
   "checkout": null,
   "context": {
     "cookiecutter": {
@@ -11,7 +11,6 @@
       "lambda_handler": "handler.enrich_codepipeline_event",
       "lambda_name": "aws-lambda-telemetry-eventbridge-enrichment",
       "lambda_name_formatted": "aws-lambda-telemetry-eventbridge-enrichment",
-      "safety_disabled": "yes",
       "unit_test_style": "pytest",
       "_template": "https://github.com/hmrc/telemetry-lambda-resources"
     }
