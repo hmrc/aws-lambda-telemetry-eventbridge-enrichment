@@ -85,10 +85,6 @@ publish_to_artifactory: ## Build and push lambda zip to Artifactory
 	@./bin/lambda-tools.sh publish_to_artifactory
 .PHONY: publish_to_artifactory
 
-safety: ## Run Safety
-	@echo Safety check is disabled
-.PHONY: safety
-
 setup: check_poetry ## Setup virtualenv & dependencies using poetry and set-up the git hook scripts
 	@export POETRY_VIRTUALENVS_IN_PROJECT=$(POETRY_VIRTUALENVS_IN_PROJECT) && poetry run pip install --upgrade pip
 	@poetry config experimental.new-installer false
@@ -105,7 +101,7 @@ test: setup ## Run unit tests
 	@./bin/lambda-tools.sh unittest
 .PHONY: test
 
-verify: test bandit black safety ## Run all the checks and tests
+verify: test bandit black ## Run all the checks and tests
 .PHONY: verify
 
 verify_publish_release: verify prepare_release package publish cut_release ## Run all the checks and tests, package, publish and release the lambda
