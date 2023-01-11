@@ -5,11 +5,10 @@ from aws_lambda_context import LambdaContext
 from aws_lambda_powertools import Logger
 from botocore.config import Config
 from botocore.exceptions import ClientError
+from exceptions import EmptyEventDetailException
+from exceptions import NoExecutionIdFoundException
 from github import Github
-
-from .exceptions import EmptyEventDetailException
-from .exceptions import NoExecutionIdFoundException
-from .helper import Helper
+from helper import Helper
 
 
 config = Config(retries={"max_attempts": 60, "mode": "standard"})
