@@ -38,7 +38,7 @@ reference = "artifactory"
 name = "aws-lambda-context"
 version = "1.1.0"
 description = "AWS Lambda Context class for type checking and testing"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">= 3.6"
 
@@ -1325,7 +1325,7 @@ reference = "artifactory"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "67859baf8650a258f94181f87720bf6310132351f5e90580aeb2eb009e468cf0"
+content-hash = "647c2781b60c27779f0f068073cbb48edb63f771dc3641f28e632a7f82dcd00e"
 
 [metadata.files]
 arrow = [

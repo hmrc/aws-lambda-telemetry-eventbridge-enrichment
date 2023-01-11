@@ -11,13 +11,13 @@ name = "artifactory"
 url = "https://artefacts.tax.service.gov.uk/artifactory/api/pypi/pips/simple/"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+PyGithub = "^1.57"
+aws-lambda-context = "^1.1.0"
 aws-lambda-powertools = "^2.5.0"
 boto3 = "^1.26.45"
-PyGithub = "^1.57"
+python = "^3.9"
 
 [tool.poetry.group.dev.dependencies]
-aws-lambda-context = "^1.1.0"
 bandit = "^1.7.4"
 black = "^22.12.0"
 cookiecutter = "^2.1.1"
