@@ -4,6 +4,7 @@ import json
 class Helper:
     github_to_slack = {
         "1422984+webit4me@users.noreply.github.com": "ali.bahman",
+        "abn@webit4.me": "ali.bahman",
         "gavD@users.noreply.github.com": "gavin.davies1",
         "29373851+thinkstack@users.noreply.github.com": "lee.myring",
         "22219356+matthew-hollick@users.noreply.github.com": "matthew.hollick",
