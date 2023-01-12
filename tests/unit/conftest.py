@@ -92,6 +92,30 @@ def get_pipeline_execution_success_fixture():
 
 
 @pytest.fixture(scope="function")
+def get_pipeline_execution_failure_fixture():
+    return {
+        "pipelineExecution": {
+            "pipelineName": "telemetry-terraform-pipeline",
+            "pipelineVersion": 13,
+            "pipelineExecutionId": "0d18ecc5-2611-436b-9d2f-ba7e9bfc721d",
+            "status": "Succeeded",
+            "artifactRevisions": [],
+        },
+        "ResponseMetadata": {
+            "RequestId": "bdb16569-7833-4468-96ba-588de0ae9c06",
+            "HTTPStatusCode": 200,
+            "HTTPHeaders": {
+                "x-amzn-requestid": "bdb16569-7833-4468-96ba-588de0ae9c06",
+                "date": "Tue, 10 Jan 2023 11:34:48 GMT",
+                "content-type": "application/x-amz-json-1.1",
+                "content-length": "2066",
+            },
+            "RetryAttempts": 0,
+        },
+    }
+
+
+@pytest.fixture(scope="function")
 def cloudwatch_event_pipeline_failed():
     return {
         "version": "0",
