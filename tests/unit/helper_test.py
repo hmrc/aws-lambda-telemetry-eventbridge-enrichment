@@ -31,3 +31,13 @@ def test_get_slack_handle_for_valid_users(valid_users, helper):
 def test_get_slack_handle_for_invalid_user_throws(helper):
     """Test that users that are not in the helper causes an exception to be raised"""
     helper.get_slack_handle("i-do-not-exist")
+
+
+def test_open_sqs_envelope(
+    helper, sqs_message_containing_cloudwatch_event_pipeline_failed
+):
+    """Test that the SQS envelope can be opened"""
+    event = helper.open_sqs_envelope(
+        sqs_message_containing_cloudwatch_event_pipeline_failed
+    )
+    assert event.get("id") == "4da4f3e3-5b27-557c-b293-a8a8b4a54213"

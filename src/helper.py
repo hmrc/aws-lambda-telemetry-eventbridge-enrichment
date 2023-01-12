@@ -1,3 +1,6 @@
+import json
+
+
 class Helper:
     github_to_slack = {
         "1422984+webit4me@users.noreply.github.com": "ali.bahman",
@@ -26,3 +29,10 @@ class Helper:
             f"Returned Slack handle {slack_handle} for GitHub email {github_email}"
         )
         return slack_handle
+
+    def open_sqs_envelope(self, sqs_message: list) -> dict:
+        """
+        SQS messages are like an "envelope" wrapping the message we want.
+        This method "opens" the "envelope" and returns the message body.
+        """
+        return json.loads(sqs_message[0].get("body"))
