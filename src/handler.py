@@ -10,7 +10,6 @@ from exceptions import NoExecutionIdFoundException
 from github import Github
 from helper import Helper
 
-
 config = Config(retries={"max_attempts": 60, "mode": "standard"})
 ssm_client = boto3.client("ssm", config=config, region_name="eu-west-2")
 pipeline_client = boto3.client("codepipeline", config=config, region_name="eu-west-2")
@@ -22,6 +21,7 @@ logger = Logger(
     service="aws-lambda-telemetry-eventbridge-enrichment",
     level=os.environ.get("LOG_LEVEL", "DEBUG"),
 )
+helper = Helper(logger)
 
 
 def get_ssm_parameter(ssm_parameter: str) -> str:
@@ -60,7 +60,21 @@ def get_github_author_email(github_token: str, commit_sha: str) -> str:
     return commit.commit.author.email
 
 
+def enrich_sqs_event(sqs_message: list, context: LambdaContext) -> str:
+    """
+    Receives an sqs message that contains a CodePipeline event and enriches it.
+    Wraps enrich_codepipeline_event.
+    """
+    event = helper.open_sqs_envelope(sqs_message)
+    return enrich_codepipeline_event(event, context)
+
+
 def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
+    """
+    Enriches a CodePipeline event with:
+    1. Execution ID
+    2. Slack user of the person making the commit
+    """
     try:
         logger.info(f"Lambda Request ID: {context.aws_request_id}")
     except AttributeError:
@@ -91,7 +105,6 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     author_email = get_github_author_email(github_token, commit_sha)
 
     # translate git email -> slack id (simple lookup)
-    helper = Helper(logger)
     slack_handle = helper.get_slack_handle(author_email)
     event.get("detail")["slack_handle"] = slack_handle
 

@@ -151,3 +151,31 @@ def test_lambda_handler_invalid_event_with_no_execution_id(
 
         # Assert
         assert response is None
+
+
+@patch("handler.get_github_author_email")
+def test_handler_sqs_golden_path(
+    mock_github,
+    ssm,
+    codepipeline_client_stub,
+    get_pipeline_execution_success_fixture,
+    sqs_message_containing_cloudwatch_event_pipeline_failed,
+    context,
+):
+    # Arrange
+    from handler import enrich_sqs_event
+
+    mock_github.return_value = "29373851+thinkstack@users.noreply.github.com"
+    ssm.put_parameter(Name="telemetry_github_token", Value="token123")
+    codepipeline_client_stub.add_response(
+        "get_pipeline_execution", get_pipeline_execution_success_fixture
+    )
+
+    # Act
+    response = enrich_sqs_event(
+        sqs_message_containing_cloudwatch_event_pipeline_failed, context
+    )
+
+    # Assert
+    assert response is not None
+    assert response.get("detail").get("slack_handle") == "lee.myring"
