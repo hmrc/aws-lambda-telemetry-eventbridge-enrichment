@@ -43,21 +43,33 @@ def get_pipeline_commit_sha(name: str, execution_id: str) -> str:
         logger.error(e.response["Error"]["Message"])
         raise e
 
-    # Get the first artifact revision which is the source_output
-    source_revision = [
+    # Get the first artifact revision which is the source_output - don't assume there will always be one
+    source_revision_list = [
         revision
         for revision in response["pipelineExecution"]["artifactRevisions"]
         if revision["name"] == "source_output"
-    ][0]
+    ]
 
-    return source_revision["revisionId"]
+    # Default revision identifier to empty string, only populate if the artifactRevisions has a 'source_output'
+    # The 'source_output' is the standard name given to all our GitHub Source pipeline steps
+    revision_id = ""
+
+    if len(source_revision_list) > 0:
+        revision_id = source_revision_list[0]["revisionId"]
+
+    return revision_id
 
 
 def get_github_author_email(github_token: str, commit_sha: str) -> str:
-    g = Github(github_token)
-    repo = g.get_repo(github_repo)
-    commit = repo.get_commit(sha=commit_sha)
-    return commit.commit.author.email
+    if not commit_sha:
+        author_email = "<not found - empty sha>"
+    else:
+        g = Github(github_token)
+        repo = g.get_repo(github_repo)
+        commit = repo.get_commit(sha=commit_sha)
+        author_email = commit.commit.author.email
+
+    return author_email
 
 
 def enrich_sqs_event(sqs_message: list, context: LambdaContext) -> str:
@@ -65,6 +77,13 @@ def enrich_sqs_event(sqs_message: list, context: LambdaContext) -> str:
     Receives an sqs message that contains a CodePipeline event and enriches it.
     Wraps enrich_codepipeline_event.
     """
+    try:
+        logger.info(f"Lambda Request ID: {context.aws_request_id}")
+    except AttributeError:
+        logger.info("No context object available")
+
+    logger.debug(f'Event received from SQS: "{sqs_message}"')
+
     event = helper.open_sqs_envelope(sqs_message)
     return enrich_codepipeline_event(event, context)
 
@@ -99,7 +118,7 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
 
     # get GitHub commit sha from execution id
     commit_sha = get_pipeline_commit_sha(pipeline, execution_id)
-    logger.debug(commit_sha)
+    logger.debug(f"commit_sha: {commit_sha}")
 
     # get commit author(s) from sha
     author_email = get_github_author_email(github_token, commit_sha)

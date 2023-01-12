@@ -1,7 +1,9 @@
+from unittest import mock
 from unittest.mock import patch
 
 import pytest
 from botocore.exceptions import ClientError
+from github import Github
 
 
 def test_get_ssm_parameter(ssm):
@@ -28,7 +30,7 @@ def test_get_ssm_parameter_raises_error(ssm):
         assert parameter_result is None
 
 
-def test_get_pipeline_execution_succeeds(
+def test_get_pipeline_commit_sha_returns_commit_from_source_output(
     codepipeline_client_stub, get_pipeline_execution_success_fixture
 ):
     # Arrange
@@ -45,6 +47,60 @@ def test_get_pipeline_execution_succeeds(
 
     # Assert
     assert git_revision_id == "bc051f8d7fbf183dbb840462cb5c17d887964842"
+
+
+def test_get_pipeline_commit_sha_returns_empty_with_no_source_output(
+    codepipeline_client_stub, get_pipeline_execution_failure_fixture
+):
+    # Arrange
+    from handler import get_pipeline_commit_sha
+
+    codepipeline_client_stub.add_response(
+        "get_pipeline_execution", get_pipeline_execution_failure_fixture
+    )
+
+    # Act
+    git_revision_id = get_pipeline_commit_sha(
+        "telemetry-terraform-pipeline", "0d18ecc5-2611-436b-9d2f-ba7e9bfc721d"
+    )
+
+    # Assert
+    assert git_revision_id == ""
+
+
+@patch.object(Github, "get_repo")
+def test_get_github_author_returns_valid(
+    mock_get_repo, codepipeline_client_stub, get_pipeline_execution_failure_fixture
+):
+    # Arrange
+    from handler import get_github_author_email
+
+    author = mock.Mock()
+    author.email = "mock@example.com"
+    commit = mock.Mock()
+    commit.author = author
+    mock_commit = mock.Mock()
+    mock_commit.commit = commit
+    mock_get_repo.return_value.get_commit.return_value = mock_commit
+
+    # Act
+    author_email = get_github_author_email("mock_token", "mock_sha")
+
+    # Assert
+    assert author_email == "mock@example.com"
+
+
+def test_get_github_author_returns_not_found(
+    codepipeline_client_stub, get_pipeline_execution_failure_fixture
+):
+    # Arrange
+    from handler import get_github_author_email
+
+    # Act
+    author_email = get_github_author_email("mock_token", "")
+
+    # Assert
+    assert author_email == "<not found - empty sha>"
 
 
 def test_get_pipeline_execution_handles_incorrect_execution_id(
