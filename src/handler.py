@@ -127,4 +127,8 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     slack_handle = helper.get_slack_handle(author_email)
     event.get("detail")["slack_handle"] = slack_handle
 
+    event.get("detail")[
+        "enriched_title"
+    ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha}"
+
     return event
