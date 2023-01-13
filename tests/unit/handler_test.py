@@ -236,9 +236,7 @@ def test_handler_sqs_golden_path(
     # Arrange
     from handler import enrich_sqs_event
 
-    mock_github_author_email.return_value = (
-        "abn@webit4.me"
-    )
+    mock_github_author_email.return_value = "abn@webit4.me"
     mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
     ssm.put_parameter(Name="telemetry_github_token", Value="token123")
     codepipeline_client_stub.add_response(
