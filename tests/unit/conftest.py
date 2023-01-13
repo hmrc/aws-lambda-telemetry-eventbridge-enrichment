@@ -4,7 +4,6 @@ from datetime import timedelta
 
 import boto3
 import pytest
-import pytz
 from aws_lambda_context import LambdaContext
 from botocore.stub import Stubber
 from moto import mock_ssm
@@ -70,7 +69,6 @@ def get_pipeline_execution_success_fixture():
             "artifactRevisions": [
                 {
                     "name": "source_output",
-                    "created": datetime.now(pytz.utc) - timedelta(minutes=61),
                     "revisionId": "bc051f8d7fbf183dbb840462cb5c17d887964842",
                     "revisionSummary": "TEL-3481 create pagerduty-config-deployer",
                     "revisionUrl": "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842",

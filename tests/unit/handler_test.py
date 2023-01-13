@@ -30,42 +30,52 @@ def test_get_ssm_parameter_raises_error(ssm):
         assert parameter_result is None
 
 
-def test_get_pipeline_commit_sha_returns_commit_from_source_output(
+def test_get_pipeline_commit_data_returns_commit_from_source_output(
     codepipeline_client_stub, get_pipeline_execution_success_fixture
 ):
     # Arrange
-    from handler import get_pipeline_commit_sha
+    from handler import get_pipeline_commit_data
 
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
     )
 
     # Act
-    git_revision_id = get_pipeline_commit_sha(
+    git_data = get_pipeline_commit_data(
         "telemetry-terraform-pipeline", "0d18ecc5-2611-436b-9d2f-ba7e9bfc721d"
     )
 
     # Assert
-    assert git_revision_id == "bc051f8d7fbf183dbb840462cb5c17d887964842"
+    assert git_data == {
+        "name": "source_output",
+        "revisionId": "bc051f8d7fbf183dbb840462cb5c17d887964842",
+        "revisionSummary": "TEL-3481 create pagerduty-config-deployer",
+        "revisionUrl": "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842",
+    }
 
 
-def test_get_pipeline_commit_sha_returns_empty_with_no_source_output(
+def test_get_pipeline_commit_data_returns_empty_with_no_source_output(
     codepipeline_client_stub, get_pipeline_execution_failure_fixture
 ):
     # Arrange
-    from handler import get_pipeline_commit_sha
+    from handler import get_pipeline_commit_data
 
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_failure_fixture
     )
 
     # Act
-    git_revision_id = get_pipeline_commit_sha(
+    git_data = get_pipeline_commit_data(
         "telemetry-terraform-pipeline", "0d18ecc5-2611-436b-9d2f-ba7e9bfc721d"
     )
 
     # Assert
-    assert git_revision_id == ""
+    assert git_data == {
+        "name": "",
+        "revisionId": "",
+        "revisionSummary": "",
+        "revisionUrl": "",
+    }
 
 
 @patch.object(Github, "get_repo")
@@ -107,7 +117,7 @@ def test_get_pipeline_execution_handles_incorrect_execution_id(
     codepipeline_client_stub,
 ):
     # Arrange
-    from handler import get_pipeline_commit_sha
+    from handler import get_pipeline_commit_data
 
     codepipeline_client_stub.add_client_error(
         "get_pipeline_execution",
@@ -117,7 +127,7 @@ def test_get_pipeline_execution_handles_incorrect_execution_id(
 
     # Act & Assert
     with pytest.raises(ClientError) as e:
-        get_pipeline_commit_sha(
+        get_pipeline_commit_data(
             "telemetry-terraform-pipeline", "1d18ecc5-2611-436b-9d2f-ba7e9bfc721d"
         )
     assert (
@@ -129,7 +139,7 @@ def test_get_pipeline_execution_handles_incorrect_execution_id(
 
 def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_stub):
     # Arrange
-    from handler import get_pipeline_commit_sha
+    from handler import get_pipeline_commit_data
 
     codepipeline_client_stub.add_client_error(
         "get_pipeline_execution",
@@ -139,7 +149,7 @@ def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_s
 
     # Act & Assert
     with pytest.raises(ClientError) as e:
-        get_pipeline_commit_sha(
+        get_pipeline_commit_data(
             "non-existent-pipeline", "0d18ecc5-2611-436b-9d2f-ba7e9bfc721d"
         )
     assert (
@@ -149,11 +159,9 @@ def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_s
     )
 
 
-@patch("handler.get_github_commit_message_summary")
 @patch("handler.get_github_author_email")
 def test_handler_golden_path(
     mock_github_author_email,
-    mock_get_github_commit_message_summary,
     ssm,
     codepipeline_client_stub,
     get_pipeline_execution_success_fixture,
@@ -166,7 +174,6 @@ def test_handler_golden_path(
     mock_github_author_email.return_value = (
         "29373851+thinkstack@users.noreply.github.com"
     )
-    mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
     ssm.put_parameter(Name="telemetry_github_token", Value="token123")
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
@@ -180,11 +187,15 @@ def test_handler_golden_path(
     assert response.get("detail").get("slack_handle") == "lee.myring"
     assert (
         response.get("detail").get("commit_message_summary")
-        == "[TEL-1234] Here is a commit"
+        == "TEL-3481 create pagerduty-config-deployer"
     )
     assert (
         response.get("detail").get("enriched_title")
-        == "CodePipeline failed: myPipeline. Committer: @lee.myring Sha: bc051f8d - [TEL-1234] Here is a commit"
+        == "CodePipeline failed: myPipeline. Committer: @lee.myring Sha: bc051f8d - TEL-3481 create pagerduty-config-deployer"
+    )
+    assert (
+        response.get("detail").get("commit_url")
+        == "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842"
     )
 
 
@@ -222,11 +233,9 @@ def test_lambda_handler_invalid_event_with_no_execution_id(
         assert response is None
 
 
-@patch("handler.get_github_commit_message_summary")
 @patch("handler.get_github_author_email")
 def test_handler_sqs_golden_path(
     mock_github_author_email,
-    mock_get_github_commit_message_summary,
     ssm,
     codepipeline_client_stub,
     get_pipeline_execution_success_fixture,
@@ -237,7 +246,7 @@ def test_handler_sqs_golden_path(
     from handler import enrich_sqs_event
 
     mock_github_author_email.return_value = "abn@webit4.me"
-    mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
+    # mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
     ssm.put_parameter(Name="telemetry_github_token", Value="token123")
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
@@ -253,10 +262,13 @@ def test_handler_sqs_golden_path(
     assert response.get("detail").get("slack_handle") == "ali.bahman"
     assert (
         response.get("detail").get("commit_message_summary")
-        == "[TEL-1234] Here is a commit"
+        == "TEL-3481 create pagerduty-config-deployer"
     )
-
     assert (
         response.get("detail").get("enriched_title")
-        == "CodePipeline failed: TEL-2490. Committer: @ali.bahman Sha: bc051f8d - [TEL-1234] Here is a commit"
+        == "CodePipeline failed: TEL-2490. Committer: @ali.bahman Sha: bc051f8d - TEL-3481 create pagerduty-config-deployer"
+    )
+    assert (
+        response.get("detail").get("commit_url")
+        == "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842"
     )
