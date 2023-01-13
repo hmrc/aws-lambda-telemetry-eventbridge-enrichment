@@ -37,12 +37,12 @@ def get_ssm_parameter(ssm_parameter: str) -> str:
 def get_pipeline_commit_data(name: str, execution_id: str) -> dict:
     """
     Returns map like:
-                {
-                "name": "source_output",
-                "revisionId": "afd432bc775c1a24c17b421187950a3af15db703",
-                "revisionSummary": "lambda-eventbridge-enrichment0.0.12->0.0.15 (#2250)",
-                "revisionUrl": "https://github.com/hmrc/telemetry-terraform/commit/afd432bc775c1a24c17b421187950a3af15db703"
-            }
+    {
+        "name": "source_output",
+        "revisionId": "afd432bc775c1a24c17b421187950a3af15db703",
+        "revisionSummary": "lambda-eventbridge-enrichment0.0.12->0.0.15 (#2250)",
+        "revisionUrl": "https://github.com/hmrc/telemetry-terraform/commit/afd432bc775c1a24c17b421187950a3af15db703"
+    }
     """
     try:
         response = pipeline_client.get_pipeline_execution(
