@@ -72,6 +72,18 @@ def get_github_author_email(github_token: str, commit_sha: str) -> str:
     return author_email
 
 
+def get_github_commit_message_summary(github_token: str, commit_sha: str) -> str:
+    if not commit_sha:
+        commit_message_summary = "<not found - empty sha>"
+    else:
+        g = Github(github_token)
+        repo = g.get_repo(github_repo)
+        commit = repo.get_commit(sha=commit_sha)
+        commit_message_summary = commit.commit.message.partition("\n")[0]
+
+    return commit_message_summary
+
+
 def enrich_sqs_event(sqs_message: list, context: LambdaContext) -> str:
     """
     Receives an sqs message that contains a CodePipeline event and enriches it.
@@ -126,9 +138,13 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     # translate git email -> slack id (simple lookup)
     slack_handle = helper.get_slack_handle(author_email)
     event.get("detail")["slack_handle"] = slack_handle
+    commit_message_summary = get_github_commit_message_summary(
+        github_token, commit_sha
+    )
+    event.get("detail")["commit_message_summary"] = commit_message_summary
 
     event.get("detail")[
         "enriched_title"
-    ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha}"
+    ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha} Summary: {commit_message_summary}"
 
     return event
