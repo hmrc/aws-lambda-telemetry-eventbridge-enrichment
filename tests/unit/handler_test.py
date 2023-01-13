@@ -148,6 +148,7 @@ def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_s
         "operation: PipelineNotFoundException"
     )
 
+
 @patch("handler.get_github_commit_message_summary")
 @patch("handler.get_github_author_email")
 def test_handler_golden_path(
