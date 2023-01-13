@@ -149,11 +149,9 @@ def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_s
     )
 
 
-# @patch("handler.get_pipeline_commit_sha")
 @patch("handler.get_github_author_email")
 def test_handler_golden_path(
     mock_github_author,
-    # mock_github_sha,
     ssm,
     codepipeline_client_stub,
     get_pipeline_execution_success_fixture,
@@ -164,7 +162,6 @@ def test_handler_golden_path(
     from handler import enrich_codepipeline_event
 
     mock_github_author.return_value = "29373851+thinkstack@users.noreply.github.com"
-    # mock_github_sha.return_value = "3353a6dc5470a04d1cee8712db7d63fd7ee0be88"
     ssm.put_parameter(Name="telemetry_github_token", Value="token123")
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
