@@ -967,19 +967,6 @@ url = "https://artefacts.tax.service.gov.uk/artifactory/api/pypi/pips/simple"
 reference = "artifactory"
 
 [[package]]
-name = "pytz"
-version = "2022.7"
-description = "World timezone definitions, modern and historical"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.source]
-type = "legacy"
-url = "https://artefacts.tax.service.gov.uk/artifactory/api/pypi/pips/simple"
-reference = "artifactory"
-
-[[package]]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
@@ -1325,7 +1312,7 @@ reference = "artifactory"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "647c2781b60c27779f0f068073cbb48edb63f771dc3641f28e632a7f82dcd00e"
+content-hash = "c21add330e1bdd49258cb5ec7bf877fffd62b38cee88b877602677b0ebaf0069"
 
 [metadata.files]
 arrow = [
@@ -1735,10 +1722,6 @@ python-dateutil = [
 python-slugify = [
     {file = "python-slugify-7.0.0.tar.gz", hash = "sha256:7a0f21a39fa6c1c4bf2e5984c9b9ae944483fd10b54804cb0e23a3ccd4954f0b"},
     {file = "python_slugify-7.0.0-py2.py3-none-any.whl", hash = "sha256:003aee64f9fd955d111549f96c4b58a3f40b9319383c70fad6277a4974bbf570"},
-]
-pytz = [
-    {file = "pytz-2022.7-py2.py3-none-any.whl", hash = "sha256:93007def75ae22f7cd991c84e02d434876818661f8df9ad5df9e950ff4e52cfd"},
-    {file = "pytz-2022.7.tar.gz", hash = "sha256:7ccfae7b4b2c067464a6733c6261673fdb8fd1be905460396b97a073e9fa683a"},
 ]
 pyyaml = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},

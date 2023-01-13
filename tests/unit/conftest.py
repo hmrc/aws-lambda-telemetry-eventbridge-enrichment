@@ -4,7 +4,6 @@ from datetime import timedelta
 
 import boto3
 import pytest
-import pytz
 from aws_lambda_context import LambdaContext
 from botocore.stub import Stubber
 from moto import mock_ssm
