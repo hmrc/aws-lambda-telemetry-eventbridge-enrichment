@@ -184,7 +184,7 @@ def test_handler_golden_path(
     )
     assert (
         response.get("detail").get("enriched_title")
-        == "CodePipeline failed: myPipeline. Committer: @lee.myring Sha: bc051f8d7fbf183dbb840462cb5c17d887964842 Summary: [TEL-1234] Here is a commit"
+        == "CodePipeline failed: myPipeline. Committer: @lee.myring Sha: bc051f8d - [TEL-1234] Here is a commit"
     )
 
 
@@ -258,5 +258,5 @@ def test_handler_sqs_golden_path(
 
     assert (
         response.get("detail").get("enriched_title")
-        == "CodePipeline failed: TEL-2490. Committer: @ali.bahman Sha: bc051f8d7fbf183dbb840462cb5c17d887964842 Summary: [TEL-1234] Here is a commit"
+        == "CodePipeline failed: TEL-2490. Committer: @ali.bahman Sha: bc051f8d - [TEL-1234] Here is a commit"
     )
