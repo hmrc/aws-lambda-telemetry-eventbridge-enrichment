@@ -148,10 +148,11 @@ def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_s
         "operation: PipelineNotFoundException"
     )
 
-
+@patch("handler.get_github_commit_message_summary")
 @patch("handler.get_github_author_email")
 def test_handler_golden_path(
-    mock_github_author,
+    mock_github_author_email,
+    mock_get_github_commit_message_summary,
     ssm,
     codepipeline_client_stub,
     get_pipeline_execution_success_fixture,
@@ -161,7 +162,10 @@ def test_handler_golden_path(
     # Arrange
     from handler import enrich_codepipeline_event
 
-    mock_github_author.return_value = "29373851+thinkstack@users.noreply.github.com"
+    mock_github_author_email.return_value = (
+        "29373851+thinkstack@users.noreply.github.com"
+    )
+    mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
     ssm.put_parameter(Name="telemetry_github_token", Value="token123")
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
@@ -173,6 +177,10 @@ def test_handler_golden_path(
     # Assert
     assert response is not None
     assert response.get("detail").get("slack_handle") == "lee.myring"
+    assert (
+        response.get("detail").get("commit_message_summary")
+        == "[TEL-1234] Here is a commit"
+    )
     assert (
         response.get("detail").get("enriched_title")
         == "CodePipeline failed: myPipeline. Committer: @lee.myring Sha: bc051f8d7fbf183dbb840462cb5c17d887964842"
