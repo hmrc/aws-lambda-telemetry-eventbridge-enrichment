@@ -34,7 +34,16 @@ def get_ssm_parameter(ssm_parameter: str) -> str:
     return parameter["Parameter"]["Value"]
 
 
-def get_pipeline_commit_sha(name: str, execution_id: str) -> str:
+def get_pipeline_commit_data(name: str, execution_id: str) -> dict:
+    """
+    Returns map like:
+                {
+                "name": "source_output",
+                "revisionId": "afd432bc775c1a24c17b421187950a3af15db703",
+                "revisionSummary": "lambda-eventbridge-enrichment0.0.12->0.0.15 (#2250)",
+                "revisionUrl": "https://github.com/hmrc/telemetry-terraform/commit/afd432bc775c1a24c17b421187950a3af15db703"
+            }
+    """
     try:
         response = pipeline_client.get_pipeline_execution(
             pipelineName=name, pipelineExecutionId=execution_id
@@ -52,12 +61,10 @@ def get_pipeline_commit_sha(name: str, execution_id: str) -> str:
 
     # Default revision identifier to empty string, only populate if the artifactRevisions has a 'source_output'
     # The 'source_output' is the standard name given to all our GitHub Source pipeline steps
-    revision_id = ""
-
     if len(source_revision_list) > 0:
-        revision_id = source_revision_list[0]["revisionId"]
-
-    return revision_id
+        return source_revision_list[0]
+    else:
+        return {"name": "", "revisionId": "", "revisionSummary": "", "revisionUrl": ""}
 
 
 def get_github_author_email(github_token: str, commit_sha: str) -> str:
@@ -70,18 +77,6 @@ def get_github_author_email(github_token: str, commit_sha: str) -> str:
         author_email = commit.commit.author.email
 
     return author_email
-
-
-def get_github_commit_message_summary(github_token: str, commit_sha: str) -> str:
-    if not commit_sha:
-        commit_message_summary = "<not found - empty sha>"
-    else:
-        g = Github(github_token)
-        repo = g.get_repo(github_repo)
-        commit = repo.get_commit(sha=commit_sha)
-        commit_message_summary = commit.commit.message.partition("\n")[0]
-
-    return commit_message_summary
 
 
 def enrich_sqs_event(sqs_message: list, context: LambdaContext) -> str:
@@ -129,18 +124,19 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     github_token = get_ssm_parameter(github_token_param)
 
     # get GitHub commit sha from execution id
-    commit_sha = get_pipeline_commit_sha(pipeline, execution_id)
-    logger.debug(f"commit_sha: {commit_sha}")
+    commit_data = get_pipeline_commit_data(pipeline, execution_id)
+    logger.debug(f"commit_sha: {commit_data}")
 
     # get commit author(s) from sha
-    author_email = get_github_author_email(github_token, commit_sha)
+    author_email = get_github_author_email(github_token, commit_data.get("revisionId"))
 
     # translate git email -> slack id (simple lookup)
     slack_handle = helper.get_slack_handle(author_email)
     event.get("detail")["slack_handle"] = slack_handle
-    commit_message_summary = get_github_commit_message_summary(github_token, commit_sha)
-    event.get("detail")["commit_message_summary"] = commit_message_summary
-
+    commit_sha = commit_data.get("revisionId")
+    commit_message_summary = commit_data.get("revisionSummary")
+    event.get("detail")["commit_message_summary"] = commit_data.get("revisionSummary")
+    event.get("detail")["commit_url"] = commit_data.get("revisionUrl")
     event.get("detail")[
         "enriched_title"
     ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha[:8]} - {commit_message_summary}"
