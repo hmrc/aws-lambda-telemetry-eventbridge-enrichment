@@ -145,4 +145,6 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
         "enriched_title"
     ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha} Summary: {commit_message_summary}"
 
+    logger.debug(f'Final enriched event: "{event}"')
+
     return event

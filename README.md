@@ -16,3 +16,12 @@ Please check the [telemetry-terraform](https://github.com/hmrc/telemetry-terrafo
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
+
+
+# Troubleshooting
+
+## I can't run the tests
+
+You need your PYTHONENV to include `src` in this project.
+
+VSCode users may get away with having an `.env` file that contains `PYTHONPATH=src`. Other IDEs will require their own solutions.
