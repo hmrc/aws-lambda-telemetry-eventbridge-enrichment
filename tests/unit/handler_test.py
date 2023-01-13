@@ -213,9 +213,11 @@ def test_lambda_handler_invalid_event_with_no_execution_id(
         assert response is None
 
 
+@patch("handler.get_github_commit_message_summary")
 @patch("handler.get_github_author_email")
 def test_handler_sqs_golden_path(
-    mock_github,
+    mock_github_author_email,
+    mock_get_github_commit_message_summary,
     ssm,
     codepipeline_client_stub,
     get_pipeline_execution_success_fixture,
@@ -225,7 +227,10 @@ def test_handler_sqs_golden_path(
     # Arrange
     from handler import enrich_sqs_event
 
-    mock_github.return_value = "29373851+thinkstack@users.noreply.github.com"
+    mock_github_author_email.return_value = (
+        "29373851+thinkstack@users.noreply.github.com"
+    )
+    mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
     ssm.put_parameter(Name="telemetry_github_token", Value="token123")
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
@@ -239,3 +244,7 @@ def test_handler_sqs_golden_path(
     # Assert
     assert response is not None
     assert response.get("detail").get("slack_handle") == "lee.myring"
+    assert (
+        response.get("detail").get("commit_message_summary")
+        == "[TEL-1234] Here is a commit"
+    )
