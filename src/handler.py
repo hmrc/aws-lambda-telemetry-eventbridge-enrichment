@@ -138,12 +138,13 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     # translate git email -> slack id (simple lookup)
     slack_handle = helper.get_slack_handle(author_email)
     event.get("detail")["slack_handle"] = slack_handle
-    event.get("detail")["commit_message_summary"] = get_github_commit_message_summary(
+    commit_message_summary = get_github_commit_message_summary(
         github_token, commit_sha
     )
+    event.get("detail")["commit_message_summary"] = commit_message_summary
 
     event.get("detail")[
         "enriched_title"
-    ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha}"
+    ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha} Summary: {commit_message_summary}"
 
     return event
