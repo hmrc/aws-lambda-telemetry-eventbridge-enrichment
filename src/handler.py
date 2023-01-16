@@ -134,8 +134,8 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     slack_handle = helper.get_slack_handle(author_email)
     event.get("detail")["slack_handle"] = slack_handle
     commit_sha = commit_data.get("revisionId")
-    commit_message_summary = commit_data.get("revisionSummary")
-    event.get("detail")["commit_message_summary"] = commit_data.get("revisionSummary")
+    commit_message_summary = commit_data.get("revisionSummary").partition("\n")[0]
+    event.get("detail")["commit_message_summary"] = commit_message_summary
     event.get("detail")["commit_url"] = commit_data.get("revisionUrl")
     event.get("detail")[
         "enriched_title"

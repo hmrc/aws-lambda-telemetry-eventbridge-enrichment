@@ -49,7 +49,7 @@ def test_get_pipeline_commit_data_returns_commit_from_source_output(
     assert git_data == {
         "name": "source_output",
         "revisionId": "bc051f8d7fbf183dbb840462cb5c17d887964842",
-        "revisionSummary": "TEL-3481 create pagerduty-config-deployer",
+        "revisionSummary": "TEL-3481 create pagerduty-config-deployer\n\nBunch of text",
         "revisionUrl": "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842",
     }
 
