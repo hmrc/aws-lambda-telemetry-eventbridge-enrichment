@@ -11,7 +11,7 @@ def test_get_ssm_parameter(ssm):
     # Arrange & Act
     from handler import get_ssm_parameter
 
-    ssm.put_parameter(Name="foo", Value="bar")
+    ssm.put_parameter(Name="foo", Value="bar", Type="SecureString")
     parameter_result = get_ssm_parameter("foo")
 
     # Assert
@@ -174,7 +174,11 @@ def test_handler_golden_path(
     mock_github_author_email.return_value = (
         "29373851+thinkstack@users.noreply.github.com"
     )
-    ssm.put_parameter(Name="/secrets/github/telemetry_github_token", Value="token123")
+    ssm.put_parameter(
+        Name="/secrets/github/telemetry_github_token",
+        Value="token123",
+        Type="SecureString",
+    )
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
     )
@@ -247,7 +251,11 @@ def test_handler_sqs_golden_path(
 
     mock_github_author_email.return_value = "abn@webit4.me"
     # mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
-    ssm.put_parameter(Name="/secrets/github/telemetry_github_token", Value="token123")
+    ssm.put_parameter(
+        Name="/secrets/github/telemetry_github_token",
+        Value="token123",
+        Type="SecureString",
+    )
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
     )
