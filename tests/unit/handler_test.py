@@ -11,11 +11,11 @@ def test_get_ssm_parameter(ssm):
     # Arrange & Act
     from handler import get_ssm_parameter
 
-    ssm.put_parameter(Name="telemetry_github_user", Value="foobar")
-    parameter_result = get_ssm_parameter("telemetry_github_user")
+    ssm.put_parameter(Name="foo", Value="bar")
+    parameter_result = get_ssm_parameter("foo")
 
     # Assert
-    assert parameter_result == "foobar"
+    assert parameter_result == "bar"
 
 
 def test_get_ssm_parameter_raises_error(ssm):
@@ -24,7 +24,7 @@ def test_get_ssm_parameter_raises_error(ssm):
     from handler import get_ssm_parameter
 
     with pytest.raises(ClientError):
-        parameter_result = get_ssm_parameter("telemetry_github_user")
+        parameter_result = get_ssm_parameter("foo")
 
         # Assert
         assert parameter_result is None
