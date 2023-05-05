@@ -10,12 +10,14 @@ readme = "README.md"
 name = "artifactory"
 url = "https://artefacts.tax.service.gov.uk/artifactory/api/pypi/pips/simple/"
 
+# Locking cryptography to 39.0.0 as glibc package in aws lambda environment is not compatible with later versions of cryptography
 [tool.poetry.dependencies]
 PyGithub = "^1.57"
 aws-lambda-context = "^1.1.0"
 aws-lambda-powertools = "^2.5.0"
 boto3 = "^1.26.45"
 python = "^3.9"
+cryptography = "39.0.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.4"
