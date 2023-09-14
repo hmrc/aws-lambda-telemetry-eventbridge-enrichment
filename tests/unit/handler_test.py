@@ -171,9 +171,7 @@ def test_handler_golden_path(
     # Arrange
     from handler import enrich_codepipeline_event
 
-    mock_github_author_email.return_value = (
-        "29373851+thinkstack@users.noreply.github.com"
-    )
+    mock_github_author_email.return_value = "18111914+sjpalf@users.noreply.github.com"
     ssm.put_parameter(
         Name="/secrets/github/telemetry_github_token",
         Value="token123",
@@ -188,14 +186,14 @@ def test_handler_golden_path(
 
     # Assert
     assert response is not None
-    assert response.get("detail").get("slack_handle") == "lee.myring"
+    assert response.get("detail").get("slack_handle") == "stephen.palfreyman"
     assert (
         response.get("detail").get("commit_message_summary")
         == "TEL-3481 create pagerduty-config-deployer"
     )
     assert (
         response.get("detail").get("enriched_title")
-        == "CodePipeline failed: myPipeline. Committer: @lee.myring Sha: bc051f8d - TEL-3481 create pagerduty-config-deployer"
+        == "CodePipeline failed: myPipeline. Committer: @stephen.palfreyman Sha: bc051f8d - TEL-3481 create pagerduty-config-deployer"
     )
     assert (
         response.get("detail").get("commit_url")
