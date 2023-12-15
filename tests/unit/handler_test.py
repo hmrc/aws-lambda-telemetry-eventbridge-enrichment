@@ -9,7 +9,7 @@ from github import Github
 def test_get_ssm_parameter(ssm):
     """Test that retrieving an SSM parameter that does exist returns the parameter"""
     # Arrange & Act
-    from src.handler import get_ssm_parameter
+    from handler import get_ssm_parameter
 
     ssm.put_parameter(Name="foo", Value="bar", Type="SecureString")
     parameter_result = get_ssm_parameter("foo")
@@ -21,7 +21,7 @@ def test_get_ssm_parameter(ssm):
 def test_get_ssm_parameter_raises_error(ssm):
     """Test that retrieving an SSM parameter that does not exist raises an error"""
     # Arrange & Act
-    from src.handler import get_ssm_parameter
+    from handler import get_ssm_parameter
 
     with pytest.raises(ClientError):
         parameter_result = get_ssm_parameter("foo")
@@ -34,7 +34,7 @@ def test_get_pipeline_commit_data_returns_commit_from_source_output(
     codepipeline_client_stub, get_pipeline_execution_success_fixture
 ):
     # Arrange
-    from src.handler import get_pipeline_commit_data
+    from handler import get_pipeline_commit_data
 
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_success_fixture
@@ -58,7 +58,7 @@ def test_get_pipeline_commit_data_returns_empty_with_no_source_output(
     codepipeline_client_stub, get_pipeline_execution_failure_fixture
 ):
     # Arrange
-    from src.handler import get_pipeline_commit_data
+    from handler import get_pipeline_commit_data
 
     codepipeline_client_stub.add_response(
         "get_pipeline_execution", get_pipeline_execution_failure_fixture
@@ -83,7 +83,7 @@ def test_get_github_author_returns_valid(
     mock_get_repo, codepipeline_client_stub, get_pipeline_execution_failure_fixture
 ):
     # Arrange
-    from src.handler import get_github_author_email
+    from handler import get_github_author_email
 
     author = mock.Mock()
     author.email = "mock@example.com"
@@ -104,7 +104,7 @@ def test_get_github_author_returns_not_found(
     codepipeline_client_stub, get_pipeline_execution_failure_fixture
 ):
     # Arrange
-    from src.handler import get_github_author_email
+    from handler import get_github_author_email
 
     # Act
     author_email = get_github_author_email("mock_token", "")
@@ -117,7 +117,7 @@ def test_get_pipeline_execution_handles_incorrect_execution_id(
     codepipeline_client_stub,
 ):
     # Arrange
-    from src.handler import get_pipeline_commit_data
+    from handler import get_pipeline_commit_data
 
     codepipeline_client_stub.add_client_error(
         "get_pipeline_execution",
@@ -139,7 +139,7 @@ def test_get_pipeline_execution_handles_incorrect_execution_id(
 
 def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_stub):
     # Arrange
-    from src.handler import get_pipeline_commit_data
+    from handler import get_pipeline_commit_data
 
     codepipeline_client_stub.add_client_error(
         "get_pipeline_execution",
@@ -159,7 +159,7 @@ def test_get_pipeline_execution_handles_incorrect_pipeline(codepipeline_client_s
     )
 
 
-@patch("src.handler.get_github_author_email")
+@patch("handler.get_github_author_email")
 def test_handler_golden_path(
     mock_github_author_email,
     ssm,
@@ -169,7 +169,7 @@ def test_handler_golden_path(
     context,
 ):
     # Arrange
-    from src.handler import enrich_codepipeline_event
+    from handler import enrich_codepipeline_event
 
     mock_github_author_email.return_value = "18111914+sjpalf@users.noreply.github.com"
     ssm.put_parameter(
@@ -206,8 +206,8 @@ def test_lambda_handler_invalid_event_empty_detail_with_context(
 ):
     """Test that an event containing unexpected data with lambda context logs appropriately"""
     # Arrange & Act
-    from src.exceptions import EmptyEventDetailException
-    from src.handler import enrich_codepipeline_event
+    from exceptions import EmptyEventDetailException
+    from handler import enrich_codepipeline_event
 
     with pytest.raises(EmptyEventDetailException):
         response = enrich_codepipeline_event(
@@ -223,8 +223,8 @@ def test_lambda_handler_invalid_event_with_no_execution_id(
 ):
     """Test that an event containing missing and required data with lambda context logs appropriately"""
     # Arrange & Act
-    from src.exceptions import NoExecutionIdFoundException
-    from src.handler import enrich_codepipeline_event
+    from exceptions import NoExecutionIdFoundException
+    from handler import enrich_codepipeline_event
 
     with pytest.raises(NoExecutionIdFoundException):
         response = enrich_codepipeline_event(
@@ -235,7 +235,7 @@ def test_lambda_handler_invalid_event_with_no_execution_id(
         assert response is None
 
 
-@patch("src.handler.get_github_author_email")
+@patch("handler.get_github_author_email")
 def test_handler_sqs_golden_path(
     mock_github_author_email,
     ssm,
@@ -245,7 +245,7 @@ def test_handler_sqs_golden_path(
     context,
 ):
     # Arrange
-    from src.handler import enrich_sqs_event
+    from handler import enrich_sqs_event
 
     mock_github_author_email.return_value = "abn@webit4.me"
     # mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
