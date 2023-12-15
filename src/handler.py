@@ -136,6 +136,7 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     event["detail"]["slack_handle"] = slack_handle
     commit_sha = commit_data.get("revisionId")
     commit_message_summary = commit_data.get("revisionSummary").partition("\n")[0]
+    commit_url = commit_data.get("revisionUrl")
     event["detail"]["commit_message_summary"] = commit_message_summary
     event["detail"]["commit_url"] = commit_data.get("revisionUrl")
     event["detail"][
@@ -145,7 +146,7 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     event["message-content"] = {
         "mrkdown_in": ["text"],
         "color": "red",
-        "text": f"Committer: @{slack_handle} Sha: {commit_sha[:8]} - {commit_message_summary}",
+        "text": f"Build failed after a commit by @{slack_handle} with commit {commit_url}",
     }
     logger.debug(f'Final enriched event: "{event}"')
 
