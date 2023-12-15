@@ -142,8 +142,8 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     event["detail"][
         "enriched_title"
     ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha[:8]} - {commit_message_summary}"
-    event["detail"]["message-header"] = f"CodePipeline failed: {pipeline}"
-    event["detail"]["message-content"] = json.dumps(
+    event["message-header"] = f"CodePipeline failed: {pipeline}"
+    event["message-content"] = json.dumps(
         {
             "text": f"Committer: @{slack_handle} Sha: {commit_sha[:8]} - {commit_message_summary}"
         }
