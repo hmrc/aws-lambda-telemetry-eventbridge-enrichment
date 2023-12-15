@@ -2,7 +2,8 @@ import os
 
 import pytest
 from aws_lambda_powertools import Logger
-from helper import Helper
+
+from src.helper import Helper
 
 
 @pytest.fixture

@@ -1,3 +1,4 @@
+import json
 import os
 
 import boto3
@@ -5,10 +6,12 @@ from aws_lambda_context import LambdaContext
 from aws_lambda_powertools import Logger
 from botocore.config import Config
 from botocore.exceptions import ClientError
-from exceptions import EmptyEventDetailException
-from exceptions import NoExecutionIdFoundException
+from github import Auth
 from github import Github
-from helper import Helper
+
+from .exceptions import EmptyEventDetailException
+from .exceptions import NoExecutionIdFoundException
+from .helper import Helper
 
 config = Config(retries={"max_attempts": 60, "mode": "standard"})
 ssm_client = boto3.client("ssm", config=config, region_name="eu-west-2")
@@ -71,7 +74,7 @@ def get_github_author_email(github_token: str, commit_sha: str) -> str:
     if not commit_sha:
         author_email = "<not found - empty sha>"
     else:
-        g = Github(github_token)
+        g = Github(auth=Auth.Token(github_token))
         repo = g.get_repo(github_repo)
         commit = repo.get_commit(sha=commit_sha)
         author_email = commit.commit.author.email
@@ -132,14 +135,20 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
 
     # translate git email -> slack id (simple lookup)
     slack_handle = helper.get_slack_handle(author_email)
-    event.get("detail")["slack_handle"] = slack_handle
+    event["detail"]["slack_handle"] = slack_handle
     commit_sha = commit_data.get("revisionId")
     commit_message_summary = commit_data.get("revisionSummary").partition("\n")[0]
-    event.get("detail")["commit_message_summary"] = commit_message_summary
-    event.get("detail")["commit_url"] = commit_data.get("revisionUrl")
-    event.get("detail")[
+    event["detail"]["commit_message_summary"] = commit_message_summary
+    event["detail"]["commit_url"] = commit_data.get("revisionUrl")
+    event["detail"][
         "enriched_title"
     ] = f"CodePipeline failed: {pipeline}. Committer: @{slack_handle} Sha: {commit_sha[:8]} - {commit_message_summary}"
+    event["detail"]["message-header"] = f"CodePipeline failed: {pipeline}"
+    event["detail"]["message-content"] = json.dumps(
+        {
+            "text": f"Committer: @{slack_handle} Sha: {commit_sha[:8]} - {commit_message_summary}"
+        }
+    )
 
     logger.debug(f'Final enriched event: "{event}"')
 

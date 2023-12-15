@@ -49,7 +49,7 @@ def ssm(aws_credentials):
 
 @pytest.fixture(scope="function")
 def codepipeline_client_stub():
-    from handler import pipeline_client
+    from src.handler import pipeline_client
 
     with Stubber(pipeline_client) as stubber:
         stubber.activate()
