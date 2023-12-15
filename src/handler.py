@@ -145,7 +145,7 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     event["message-content"] = {
         "mrkdwn_in": ["text"],
         "color": "red",
-        "text": f"Build failed after a commit by @{slack_handle} Commit summary: {commit_message_summary}",
+        "text": f"Build failed after a commit by <@{slack_handle}> Commit summary: {commit_message_summary}",
     }
     logger.debug(f'Final enriched event: "{event}"')
 
