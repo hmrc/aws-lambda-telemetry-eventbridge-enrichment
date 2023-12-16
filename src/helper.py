@@ -19,7 +19,7 @@ class Helper:
     ):
         self.logger = logger
 
-    def get_slack_handle(self, github_email):
+    def get_slack_handle(self, github_email: str) -> str:
         # Default to telemetry-engineers if it's an unknown user
         slack_handle = "telemetry-engineers"
         if github_email in self.github_to_slack:

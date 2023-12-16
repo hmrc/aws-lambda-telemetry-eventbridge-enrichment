@@ -1,3 +1,4 @@
+import json
 import os
 
 import boto3
@@ -135,7 +136,8 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     slack_handle = helper.get_slack_handle(author_email)
     event["detail"]["slack_handle"] = slack_handle
     commit_sha = commit_data.get("revisionId")
-    commit_message_summary = commit_data.get("revisionSummary").partition("\n")[0]
+    revision_summary = json.loads(commit_data.get("revisionSummary"))
+    commit_message_summary = revision_summary["CommitMessage"].partition("\n")[0]
     event["detail"]["commit_message_summary"] = commit_message_summary
     event["detail"]["commit_url"] = commit_data.get("revisionUrl")
     event["detail"][
