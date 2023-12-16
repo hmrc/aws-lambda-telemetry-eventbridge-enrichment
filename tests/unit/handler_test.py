@@ -189,7 +189,7 @@ def test_handler_golden_path(
     assert response.get("message-content") == {
         "mrkdwn_in": ["text"],
         "color": "red",
-        "text": "Build failed after a commit by <@stephen.palfreyman> Commit sha: bc051f8d7fbf183dbb840462cb5c17d887964842 Commit summary: TEL-3481 create pagerduty-config-deployer",
+        "text": "Build failed after a commit by <@stephen.palfreyman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
     }
 
 
@@ -260,5 +260,5 @@ def test_handler_sqs_golden_path(
     assert response.get("message-content") == {
         "mrkdwn_in": ["text"],
         "color": "red",
-        "text": "Build failed after a commit by <@ali.bahman> Commit sha: bc051f8d7fbf183dbb840462cb5c17d887964842 Commit summary: TEL-3481 create pagerduty-config-deployer",
+        "text": "Build failed after a commit by <@ali.bahman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
     }
