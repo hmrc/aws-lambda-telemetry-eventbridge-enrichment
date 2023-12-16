@@ -185,20 +185,12 @@ def test_handler_golden_path(
     response = enrich_codepipeline_event(cloudwatch_event_pipeline_failed, context)
 
     # Assert
-    assert response is not None
-    assert response.get("detail").get("slack_handle") == "stephen.palfreyman"
-    assert (
-        response.get("detail").get("commit_message_summary")
-        == "TEL-3481 create pagerduty-config-deployer"
-    )
-    assert (
-        response.get("detail").get("enriched_title")
-        == "CodePipeline failed: myPipeline. Committer: @stephen.palfreyman Sha: bc051f8d - TEL-3481 create pagerduty-config-deployer"
-    )
-    assert (
-        response.get("detail").get("commit_url")
-        == "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842"
-    )
+    assert response.get("message-header") == "CodePipeline failed: myPipeline"
+    assert response.get("message-content") == {
+        "mrkdwn_in": ["text"],
+        "color": "red",
+        "text": "Build failed after a commit by <@stephen.palfreyman> Commit sha: bc051f8d7fbf183dbb840462cb5c17d887964842 Commit summary: TEL-3481 create pagerduty-config-deployer",
+    }
 
 
 def test_lambda_handler_invalid_event_empty_detail_with_context(
@@ -264,17 +256,9 @@ def test_handler_sqs_golden_path(
     )
 
     # Assert
-    assert response is not None
-    assert response.get("detail").get("slack_handle") == "ali.bahman"
-    assert (
-        response.get("detail").get("commit_message_summary")
-        == "TEL-3481 create pagerduty-config-deployer"
-    )
-    assert (
-        response.get("detail").get("enriched_title")
-        == "CodePipeline failed: TEL-2490. Committer: @ali.bahman Sha: bc051f8d - TEL-3481 create pagerduty-config-deployer"
-    )
-    assert (
-        response.get("detail").get("commit_url")
-        == "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842"
-    )
+    assert response.get("message-header") == "CodePipeline failed: TEL-2490"
+    assert response.get("message-content") == {
+        "mrkdwn_in": ["text"],
+        "color": "red",
+        "text": "Build failed after a commit by <@ali.bahman> Commit sha: bc051f8d7fbf183dbb840462cb5c17d887964842 Commit summary: TEL-3481 create pagerduty-config-deployer",
+    }
