@@ -70,8 +70,8 @@ def get_pipeline_execution_success_fixture():
                 {
                     "name": "source_output",
                     "revisionId": "bc051f8d7fbf183dbb840462cb5c17d887964842",
-                    "revisionSummary": "TEL-3481 create pagerduty-config-deployer\n\nBunch of text",
-                    "revisionUrl": "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842",
+                    "revisionSummary": '{"ProviderType":"GitHub","CommitMessage":"TEL-3481 create pagerduty-config-deployer\\n\\nBunch of text"}',
+                    "revisionUrl": "https://codestarurl/redirect?connectionArn=blah&referenceType=COMMIT&FullRepositoryId=hmrc/telemetry-terraform&Commit=a9e1670",
                 }
             ],
         },
