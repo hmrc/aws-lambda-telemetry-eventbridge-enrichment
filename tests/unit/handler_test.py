@@ -50,7 +50,7 @@ def test_get_pipeline_commit_data_returns_commit_from_source_output(
         "name": "source_output",
         "revisionId": "bc051f8d7fbf183dbb840462cb5c17d887964842",
         "revisionSummary": '{"ProviderType":"GitHub","CommitMessage":"TEL-3481 create pagerduty-config-deployer\\n\\nBunch of text"}',
-        "revisionUrl": "https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842",
+        "revisionUrl": "https://codestarurl/redirect?connectionArn=blah&referenceType=COMMIT&FullRepositoryId=hmrc/telemetry-terraform&Commit=a9e1670",
     }
 
 
@@ -65,17 +65,12 @@ def test_get_pipeline_commit_data_returns_empty_with_no_source_output(
     )
 
     # Act
-    git_data = get_pipeline_commit_data(
+    commit_data = get_pipeline_commit_data(
         "telemetry-terraform-pipeline", "0d18ecc5-2611-436b-9d2f-ba7e9bfc721d"
     )
 
     # Assert
-    assert git_data == {
-        "name": "",
-        "revisionId": "",
-        "revisionSummary": "",
-        "revisionUrl": "",
-    }
+    assert commit_data == {}
 
 
 @patch.object(Github, "get_repo")
@@ -94,7 +89,7 @@ def test_get_github_author_returns_valid(
     mock_get_repo.return_value.get_commit.return_value = mock_commit
 
     # Act
-    author_email = get_github_author_email("mock_token", "mock_sha")
+    author_email = get_github_author_email("mock_token", "mock_repo", "mock_sha")
 
     # Assert
     assert author_email == "mock@example.com"
@@ -107,7 +102,7 @@ def test_get_github_author_returns_not_found(
     from handler import get_github_author_email
 
     # Act
-    author_email = get_github_author_email("mock_token", "")
+    author_email = get_github_author_email("mock_token", "mock_repo", "")
 
     # Assert
     assert author_email == "<not found - empty sha>"
@@ -262,3 +257,29 @@ def test_handler_sqs_golden_path(
         "color": "red",
         "text": "Build failed after a commit by <@ali.bahman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
     }
+
+
+def test_handler_no_pipeline_execution_source_output(
+    ssm,
+    codepipeline_client_stub,
+    get_pipeline_execution_failure_fixture,
+    cloudwatch_event_pipeline_failed,
+    context,
+):
+    # Arrange
+    from handler import enrich_codepipeline_event
+
+    ssm.put_parameter(
+        Name="/secrets/github/telemetry_github_token",
+        Value="token123",
+        Type="SecureString",
+    )
+    codepipeline_client_stub.add_response(
+        "get_pipeline_execution", get_pipeline_execution_failure_fixture
+    )
+
+    # Act
+    response = enrich_codepipeline_event(cloudwatch_event_pipeline_failed, context)
+
+    # Assert
+    assert response.get("message-header") == "CodePipeline failed: myPipeline"

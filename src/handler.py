@@ -1,5 +1,7 @@
 import json
 import os
+from urllib.parse import parse_qs
+from urllib.parse import urlparse
 
 import boto3
 from aws_lambda_context import LambdaContext
@@ -16,7 +18,6 @@ config = Config(retries={"max_attempts": 60, "mode": "standard"})
 ssm_client = boto3.client("ssm", config=config, region_name="eu-west-2")
 pipeline_client = boto3.client("codepipeline", config=config, region_name="eu-west-2")
 
-github_repo = "hmrc/telemetry-terraform"
 github_token_param = "/secrets/github/telemetry_github_token"
 
 logger = Logger(
@@ -66,10 +67,18 @@ def get_pipeline_commit_data(name: str, execution_id: str) -> dict:
     if len(source_revision_list) > 0:
         return source_revision_list[0]
     else:
-        return {"name": "", "revisionId": "", "revisionSummary": "", "revisionUrl": ""}
+        # return empty dictionary
+        return {}
 
 
-def get_github_author_email(github_token: str, commit_sha: str) -> str:
+def get_github_repo_from_revision_url(revision_url: str) -> str:
+    revision_url_details = urlparse(revision_url)
+    return parse_qs(revision_url_details.query)["FullRepositoryId"][0]
+
+
+def get_github_author_email(
+    github_token: str, github_repo: str, commit_sha: str
+) -> str:
     if not commit_sha:
         author_email = "<not found - empty sha>"
     else:
@@ -122,23 +131,36 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     pipeline = detail.get("pipeline")
     execution_id = detail.get("execution-id")
 
+    event["message-header"] = f"CodePipeline failed: {pipeline}"
+
     # get github client credentials
     github_token = get_ssm_parameter(github_token_param)
 
-    # get GitHub commit sha from execution id
+    # get GitHub commit details from execution id
     commit_data = get_pipeline_commit_data(pipeline, execution_id)
-    logger.debug(f"commit_sha: {commit_data}")
+    if len(commit_data.keys()) == 0:
+        # did not get any github commit details so just return event as is
+        return event
+
+    commit_sha = commit_data["revisionId"]
+    logger.debug(f"commit_sha: {commit_sha}")
+
+    # get GitHub repo name from revision URL
+    github_repo = get_github_repo_from_revision_url(commit_data["revisionUrl"])
 
     # get commit author(s) from sha
-    author_email = get_github_author_email(github_token, commit_data.get("revisionId"))
+    author_email = get_github_author_email(
+        github_token=github_token,
+        github_repo=github_repo,
+        commit_sha=commit_sha,
+    )
 
     # translate git email -> slack id (simple lookup)
     slack_handle = helper.get_slack_handle(author_email)
-    event["detail"]["slack_handle"] = slack_handle
-    commit_url = commit_data.get("revisionUrl")
-    revision_summary = json.loads(commit_data.get("revisionSummary"))
+    commit_url = f"https://github.com/{github_repo}/commit/{commit_sha}"
+    revision_summary = json.loads(commit_data["revisionSummary"])
     commit_message_summary = revision_summary["CommitMessage"].partition("\n")[0]
-    event["message-header"] = f"CodePipeline failed: {pipeline}"
+
     event["message-content"] = {
         "mrkdwn_in": ["text"],
         "color": "red",
