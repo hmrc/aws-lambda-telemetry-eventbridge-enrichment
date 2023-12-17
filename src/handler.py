@@ -160,11 +160,12 @@ def enrich_codepipeline_event(event: dict, context: LambdaContext) -> str:
     commit_url = f"https://github.com/{github_repo}/commit/{commit_sha}"
     revision_summary = json.loads(commit_data["revisionSummary"])
     commit_message_summary = revision_summary["CommitMessage"].partition("\n")[0]
+    pipeline_url = f"https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/{pipeline}/view"
 
     event["message-content"] = {
         "mrkdwn_in": ["text"],
         "color": "danger",
-        "text": f"Build failed after a commit by <@{slack_handle}> - <{commit_url}|{commit_message_summary}>",
+        "text": f"Build of <{pipeline_url}|{pipeline}> failed after a commit by <@{slack_handle}> - <{commit_url}|{commit_message_summary}>",
     }
     logger.debug(f'Final enriched event: "{event}"')
 

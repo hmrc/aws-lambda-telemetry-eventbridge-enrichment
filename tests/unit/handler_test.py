@@ -184,7 +184,7 @@ def test_handler_golden_path(
     assert response.get("message-content") == {
         "mrkdwn_in": ["text"],
         "color": "danger",
-        "text": "Build failed after a commit by <@stephen.palfreyman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
+        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/myPipeline/view|myPipeline> failed after a commit by <@stephen.palfreyman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
     }
 
 
@@ -255,7 +255,7 @@ def test_handler_sqs_golden_path(
     assert response.get("message-content") == {
         "mrkdwn_in": ["text"],
         "color": "danger",
-        "text": "Build failed after a commit by <@ali.bahman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
+        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/TEL-2490/view|TEL-2490> failed after a commit by <@ali.bahman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
     }
 
 
