@@ -6,7 +6,7 @@ import boto3
 import pytest
 from aws_lambda_context import LambdaContext
 from botocore.stub import Stubber
-from moto import mock_ssm
+from moto import mock_aws
 
 region = "eu-west-2"
 
@@ -42,7 +42,7 @@ def aws_credentials():
 
 @pytest.fixture(scope="function")
 def ssm(aws_credentials):
-    with mock_ssm():
+    with mock_aws():
         conn = boto3.client("ssm", region_name="eu-west-2")
         yield conn
 
