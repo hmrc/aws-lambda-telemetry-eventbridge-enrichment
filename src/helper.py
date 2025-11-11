@@ -3,14 +3,11 @@ import json
 
 class Helper:
     github_to_slack = {
-        "1422984+webit4me@users.noreply.github.com": "ali.bahman",
-        "abn@webit4.me": "ali.bahman",
-        "gavD@users.noreply.github.com": "gavin.davies1",
-        "ma3574@users.noreply.github.com": "muhammed.ahmed",
-        "66684341+rizinaa99@users.noreply.github.com": "rizina.khatun",
-        "Crumplepang@users.noreply.github.com": "rob.white",
-        "18111914+sjpalf@users.noreply.github.com": "stephen.palfreyman",
-        "60072280+jonnydh@users.noreply.github.com": "jonathan.heywood",
+        "150913287+wrightda101@users.noreply.github.com": "damon.wright",
+        "52657898+dave-miles-hmrc@users.noreply.github.com": "david.miles",
+        "9415522+duddingl@users.noreply.github.com": "lyndon.dudding",
+        "1253988+nisartahir@users.noreply.github.com": "nisar.tahir",
+        "0000000+stuartgrace@users.noreply.github.com": "stuart.grace",
     }
 
     def __init__(
