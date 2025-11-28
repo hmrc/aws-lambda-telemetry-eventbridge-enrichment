@@ -10,7 +10,7 @@ env:
 phases:
   install:
     commands:
-      - test "$CODEBUILD_LOCAL_BUILD" && git config --global --add safe.directory /codebuild/output/srcDownload/src
+      - test "$CODEBUILD_LOCAL_BUILD" && git config --global --add safe.directory /codebuild/output/srcDownload/src || true
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       - make setup
