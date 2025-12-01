@@ -13,7 +13,7 @@ phases:
       - test "$CODEBUILD_LOCAL_BUILD" && git config --global --add safe.directory /codebuild/output/srcDownload/src || true
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
-      - docker info
+      - docker images
       - docker pull python:3.9.20-slim-bookworm
       - make setup
   build:
