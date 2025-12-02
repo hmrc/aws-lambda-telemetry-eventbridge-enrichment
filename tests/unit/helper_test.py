@@ -8,8 +8,8 @@ from helper import Helper
 @pytest.fixture
 def valid_users():
     return [
-        ["gavD@users.noreply.github.com", "gavin.davies1"],
-        ["1422984+webit4me@users.noreply.github.com", "ali.bahman"],
+        ["150913287+wrightda101@users.noreply.github.com", "damon.wright"],
+        ["9415522+duddingl@users.noreply.github.com", "lyndon.dudding"],
     ]
 
 

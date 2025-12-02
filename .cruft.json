@@ -17,5 +17,10 @@
       "_template": "https://github.com/hmrc/telemetry-lambda-resources"
     }
   },
-  "directory": null
+  "directory": null,
+  "skip": [
+    "bin/lambda-tools.sh",
+    ".pre-commit-config.yaml",
+    "buildspec_pr.yml"
+  ]
 }
