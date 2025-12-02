@@ -22,7 +22,6 @@ S3_LAMBDA_SUB_FOLDER="build-${PROJECT_FULL_NAME}"
 S3_ADDRESS="s3://${S3_TELEMETRY_LAMBDA_ROOT}/${S3_LAMBDA_SUB_FOLDER}"
 
 DOCKER_REPOSITORY="dockerhub.tax.service.gov.uk"
-
 ## End of the configurations ########################################
 #####################################################################
 

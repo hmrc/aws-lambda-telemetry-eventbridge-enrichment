@@ -166,7 +166,7 @@ def test_handler_golden_path(
     # Arrange
     from handler import enrich_codepipeline_event
 
-    mock_github_author_email.return_value = "18111914+sjpalf@users.noreply.github.com"
+    mock_github_author_email.return_value = "9415522+duddingl@users.noreply.github.com"
     ssm.put_parameter(
         Name="/secrets/github/telemetry_github_token",
         Value="token123",
@@ -184,7 +184,7 @@ def test_handler_golden_path(
     assert response.get("message-content") == {
         "mrkdwn_in": ["text"],
         "color": "danger",
-        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/myPipeline/view|myPipeline> failed after a commit by <@stephen.palfreyman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
+        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/myPipeline/view|myPipeline> failed after a commit by <@lyndon.dudding> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
     }
 
 
@@ -234,7 +234,7 @@ def test_handler_sqs_golden_path(
     # Arrange
     from handler import enrich_sqs_event
 
-    mock_github_author_email.return_value = "abn@webit4.me"
+    mock_github_author_email.return_value = "9415522+duddingl@users.noreply.github.com"
     # mock_get_github_commit_message_summary.return_value = "[TEL-1234] Here is a commit"
     ssm.put_parameter(
         Name="/secrets/github/telemetry_github_token",
@@ -255,7 +255,7 @@ def test_handler_sqs_golden_path(
     assert response.get("message-content") == {
         "mrkdwn_in": ["text"],
         "color": "danger",
-        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/TEL-2490/view|TEL-2490> failed after a commit by <@ali.bahman> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
+        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/TEL-2490/view|TEL-2490> failed after a commit by <@lyndon.dudding> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
     }
 
 
