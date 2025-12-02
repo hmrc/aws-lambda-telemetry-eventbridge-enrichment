@@ -19,6 +19,7 @@
   },
   "directory": null,
   "skip": [
+    "bin/lambda-tools.sh",
     ".pre-commit-config.yaml",
     "buildspec_pr.yml"
   ]
