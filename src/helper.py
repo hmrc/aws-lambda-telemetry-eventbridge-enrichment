@@ -7,7 +7,6 @@ class Helper:
         "52657898+dave-miles-hmrc@users.noreply.github.com": "david.miles",
         "9415522+duddingl@users.noreply.github.com": "lyndon.dudding",
         "1253988+nisartahir@users.noreply.github.com": "nisar.tahir",
-        "0000000+stuartgrace@users.noreply.github.com": "stuart.grace",
     }
 
     def __init__(
