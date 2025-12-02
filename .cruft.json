@@ -18,5 +18,5 @@
     }
   },
   "directory": null,
-  "skip": [".pre-commit-config.yaml"]
+  "skip": [".pre-commit-config.yaml", "bin/lambda-tools.sh"]
 }
