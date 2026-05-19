@@ -18,7 +18,7 @@ Please check the [telemetry-terraform](https://github.com/hmrc/telemetry-terrafo
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
 
 
-# Troubleshooting
+# Troubleshooting
 
 ## I can't run the tests
 
