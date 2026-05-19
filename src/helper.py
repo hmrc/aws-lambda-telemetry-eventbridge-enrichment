@@ -5,6 +5,7 @@ class Helper:
     github_to_slack = {
         "150913287+wrightda101@users.noreply.github.com": "damon.wright",
         "52657898+dave-miles-hmrc@users.noreply.github.com": "david.miles",
+        "3706672+deploymentking@users.noreply.github.com": "lee.myring",
         "9415522+duddingl@users.noreply.github.com": "lyndon.dudding",
         "1253988+nisartahir@users.noreply.github.com": "nisar.tahir",
     }
