@@ -1,41 +1,72 @@
-[tool.poetry]
+[project]
 name = "aws-lambda-telemetry-eventbridge-enrichment"
-version = "0.1.0"
-description = "A lambda function that enriches events in an EventBridge Pipe"
-authors = ["Team Telemetry <telemetry@digital.hmrc.gov.uk>"]
+version = "1.0.0"
+description = "A Lambda function that enriches events in an EventBridge Pipe"
+authors = [{ name = "Team Telemetry", email = "telemetry@digital.hmrc.gov.uk" }]
 license = "Apache 2.0"
+maintainers = [{ name = "Team Telemetry", email = "telemetry@digital.hmrc.gov.uk" }]
 readme = "README.md"
+requires-python = ">=3.14,<3.15"
 
-[[tool.poetry.source]]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+]
+
+dependencies = [
+    "aws-lambda-context",
+    "aws-lambda-powertools",
+    "urllib3>=2.7.0",
+]
+
+[dependency-groups]
+dev = [
+    "bandit",
+    "black",
+    "boto3",
+    "pytest",
+    "pytest-cov",
+    "pytest-ruff",
+    "version-incrementor",
+]
+
+[tool.coverage.run]
+source = ["./src"]
+
+[tool.coverage.report]
+fail_under = 70
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli_level = "INFO"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_level = "INFO"
+python_files = ["tests.py", "test_*.py", "*_tests.py", "*_test.py"]
+pythonpath = ". src"
+addopts = [
+    "--ruff",
+    "--cov=./src",
+    "--no-cov-on-fail",
+    "-p no:warnings"
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "W"]
+
+[tool.uv]
+package = false
+default-groups = "all"
+
+[[tool.uv.index]]
 name = "artifactory"
-url = "https://artefacts.tax.service.gov.uk/artifactory/api/pypi/pips/simple/"
-
-[tool.poetry.dependencies]
-PyGithub = "^1.57"
-aws-lambda-context = "^1.1.0"
-aws-lambda-powertools = "^2.33.1"
-boto3 = "^1.26.45"
-cryptography = "^46.0.4"
-pre-commit = "^4.5.1"
-python = "^3.14.2"
-# workaround for: https://github.com/python-poetry/poetry-plugin-export/issues/183
-urllib3 = ">=1.25.4,<1.27"
-
-[tool.poetry.group.dev.dependencies]
-bandit = "^1.9.3"
-black = "^26.1.0"
-cookiecutter = "^2.1.1"
-coverage = "^7.13.5"
-flake8 = "^6.0.0"
-moto = "^5.0.1"
-pytest = "^7.2.0"
-pytest-cov = "^4.0.0"
-version-incrementor = "^1.5.0"
-reorder-python-imports = "^3.12.0"
-
-[tool.poetry.requires-plugins]
-poetry-plugin-export = "^1.0"
+url = "https://artefacts.tax.service.gov.uk/artifactory/api/pypi/pips/simple"
+default = true
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"

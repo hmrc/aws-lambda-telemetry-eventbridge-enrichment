@@ -5,23 +5,33 @@
 Multipurpose EventBridge enrichment Lambda. The purpose of this function is to take events from EventBridge sources,
 enrich the contents of the event and then allow the pipe to pass the event onto the target
 
-Please check the [telemetry-terraform](https://github.com/hmrc/telemetry-terraform) repository for details on how this Lambda is deployed.
+## Table of Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-## Requirements
+- [Prerequisites](#prerequisites)
+- [Quick start](#quick-start)
+- [License](#license)
 
-* [Python 3.9+](https://www.python.org/downloads/release)
-* [Poetry](https://python-poetry.org/)
+<!-- END doctoc -->
 
+## Prerequisites
 
-### License
+* [mise](https://mise.jdx.dev/) to manage tool versions and integrates with `uv`.
+* [uv](https://docs.astral.sh/uv/) to manage Python virtual environments and dependencies.
+
+## Quick start
+
+Install dependencies using uv:
+
+```shell
+mise run setup
+# Run tests:
+mise run test
+# Package the lambda locally:
+mise run package
+```
+
+## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
-
-
-# Troubleshooting
-
-## I can't run the tests
-
-You need your PYTHONENV to include `src` in this project.
-
-VSCode users may get away with having an `.env` file that contains `PYTHONPATH=src`. Other IDEs will require their own solutions.
