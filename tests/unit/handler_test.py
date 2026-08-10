@@ -49,8 +49,10 @@ def test_get_pipeline_commit_data_returns_commit_from_source_output(
     assert git_data == {
         "name": "source_output",
         "revisionId": "bc051f8d7fbf183dbb840462cb5c17d887964842",
-        "revisionSummary": '{"ProviderType":"GitHub","CommitMessage":"TEL-3481 create pagerduty-config-deployer\\n\\nBunch of text"}',
-        "revisionUrl": "https://codestarurl/redirect?connectionArn=blah&referenceType=COMMIT&FullRepositoryId=hmrc/telemetry-terraform&Commit=a9e1670",
+        "revisionSummary": '{"ProviderType":"GitHub",'
+        '"CommitMessage":"TEL-3481 create pagerduty-config-deployer\\n\\nBunch of text"}',
+        "revisionUrl": "https://codestarurl/redirect?connectionArn=blah&referenceType=COMMIT&"
+        "FullRepositoryId=hmrc/telemetry-terraform&Commit=a9e1670",
     }
 
 
@@ -184,7 +186,10 @@ def test_handler_golden_path(
     assert response.get("message-content") == {
         "mrkdwn_in": ["text"],
         "color": "danger",
-        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/myPipeline/view|myPipeline> failed after a commit by <@lyndon.dudding> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
+        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/"
+        "myPipeline/view|myPipeline> failed after a commit by <@lyndon.dudding> - "
+        "<https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 "
+        "create pagerduty-config-deployer>",
     }
 
 
@@ -255,7 +260,10 @@ def test_handler_sqs_golden_path(
     assert response.get("message-content") == {
         "mrkdwn_in": ["text"],
         "color": "danger",
-        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/TEL-2490/view|TEL-2490> failed after a commit by <@lyndon.dudding> - <https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 create pagerduty-config-deployer>",
+        "text": "Build of <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/"
+        "pipelines/TEL-2490/view|TEL-2490> failed after a commit by <@lyndon.dudding> - "
+        "<https://github.com/hmrc/telemetry-terraform/commit/bc051f8d7fbf183dbb840462cb5c17d887964842|TEL-3481 "
+        "create pagerduty-config-deployer>",
     }
 
 
