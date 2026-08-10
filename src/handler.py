@@ -18,7 +18,7 @@ config = Config(retries={"max_attempts": 60, "mode": "standard"})
 ssm_client = boto3.client("ssm", config=config, region_name="eu-west-2")
 pipeline_client = boto3.client("codepipeline", config=config, region_name="eu-west-2")
 
-github_token_param = "/secrets/github/telemetry_github_token"
+github_token_param = "/secrets/github/telemetry_github_token"  # nosec B105
 
 logger = Logger(
     service="aws-lambda-telemetry-eventbridge-enrichment",
